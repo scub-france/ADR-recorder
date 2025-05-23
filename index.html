@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <base target="_top">
+    <title>Architecture Decision Records</title>
+    <style>
+        body {
+            font-family: 'Google Sans', Roboto, Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #1a73e8;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #5f6368;
+        }
+
+        input[type="text"], input[type="url"], textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #dadce0;
+            border-radius: 4px;
+            font-size: 14px;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+        }
+
+        input[type="text"]:focus, input[type="url"]:focus, textarea:focus {
+            outline: none;
+            border-color: #1a73e8;
+            box-shadow: 0 0 0 2px rgba(26,115,232,0.2);
+        }
+
+        textarea {
+            height: 80px;
+            resize: vertical;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn-primary {
+            background-color: #1a73e8;
+            color: white;
+            flex: 1;
+        }
+
+        .btn-primary:hover {
+            background-color: #1557b0;
+        }
+
+        .btn-secondary {
+            background-color: #f8f9fa;
+            color: #5f6368;
+            border: 1px solid #dadce0;
+        }
+
+        .btn-secondary:hover {
+            background-color: #e8eaed;
+        }
+
+        .message {
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .message.success {
+            background-color: #e8f5e8;
+            color: #137333;
+            border: 1px solid #81c995;
+        }
+
+        .message.error {
+            background-color: #fce8e6;
+            color: #d93025;
+            border: 1px solid #f28b82;
+        }
+
+        .records-section {
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #dadce0;
+        }
+
+        .records-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .record-item {
+            background: #f8f9fa;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            border-left: 4px solid #1a73e8;
+        }
+
+        .record-name {
+            font-weight: 500;
+            color: #1a73e8;
+            margin-bottom: 5px;
+        }
+
+        .record-meta {
+            font-size: 12px;
+            color: #5f6368;
+            margin-bottom: 8px;
+        }
+
+        .record-tags {
+            font-size: 12px;
+            color: #1a73e8;
+            background: #e8f0fe;
+            padding: 2px 8px;
+            border-radius: 12px;
+            display: inline-block;
+            margin-right: 5px;
+        }
+
+        .record-link {
+            font-size: 12px;
+            color: #1a73e8;
+            text-decoration: none;
+        }
+
+        .record-link:hover {
+            text-decoration: underline;
+        }
+
+        .loading {
+            text-align: center;
+            color: #5f6368;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>Architecture Decision Records</h1>
+        <p>Manage and track your architectural decisions</p>
+    </div>
+
+    <div id="message" class="message"></div>
+
+    <form id="adrForm">
+        <div class="form-group">
+            <label for="name">ADR Name *</label>
+            <input type="text" id="name" name="name" required
+                   placeholder="e.g., ADR-001: Database Selection">
+        </div>
+
+        <div class="form-group">
+            <label for="docLink">Google Doc Link *</label>
+            <input type="url" id="docLink" name="docLink" required
+                   placeholder="https://docs.google.com/document/d/...">
+        </div>
+
+        <div class="form-group">
+            <label for="tags">Tags</label>
+            <textarea id="tags" name="tags"
+                      placeholder="e.g., database, backend, performance (separate with commas)"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="redactor">Redactor *</label>
+            <input type="text" id="redactor" name="redactor" required
+                   placeholder="e.g., John Doe">
+        </div>
+
+        <div class="button-group">
+            <button type="submit" class="btn-primary">Add ADR</button>
+            <button type="button" class="btn-secondary" onclick="clearForm()">Clear</button>
+        </div>
+    </form>
+
+    <div class="records-section">
+        <h2>Recent ADRs</h2>
+        <div id="recordsList" class="records-list">
+            <div class="loading">Loading records...</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Load existing records when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('Page loaded, attempting to load records...');
+        loadRecords();
+    });
+
+    // Handle form submission
+    document.getElementById('adrForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const formData = {
+            name: document.getElementById('name').value,
+            docLink: document.getElementById('docLink').value,
+            tags: document.getElementById('tags').value,
+            redactor: document.getElementById('redactor').value
+        };
+
+        // Validate Google Docs URL
+        if (!isValidGoogleDocsUrl(formData.docLink)) {
+            showMessage('Please enter a valid Google Docs URL', 'error');
+            return;
+        }
+
+        // Show loading state
+        const submitBtn = document.querySelector('.btn-primary');
+        const originalText = submitBtn.textContent;
+        submitBtn.textContent = 'Adding...';
+        submitBtn.disabled = true;
+
+        google.script.run
+            .withSuccessHandler(function(result) {
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+
+                if (result.success) {
+                    showMessage(result.message, 'success');
+                    clearForm();
+                    loadRecords(); // Refresh the records list
+                } else {
+                    showMessage(result.message, 'error');
+                }
+            })
+            .withFailureHandler(function(error) {
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+                showMessage('Error: ' + error.toString(), 'error');
+            })
+            .addADR(formData);
+    });
+
+    function loadRecords() {
+        console.log('loadRecords called');
+        google.script.run
+            .withSuccessHandler(function(records) {
+                console.log('SUCCESS - Received records from server:');
+                console.log('Type:', typeof records);
+                console.log('Value:', records);
+                console.log('Is Array:', Array.isArray(records));
+
+                // Add null check
+                if (records === null || records === undefined) {
+                    console.error('Records is null or undefined');
+                    document.getElementById('recordsList').innerHTML =
+                        '<div class="loading">Error: No data received from server</div>';
+                    return;
+                }
+                displayRecords(records);
+            })
+            .withFailureHandler(function(error) {
+                console.error('FAILURE - Failed to load records:');
+                console.error('Error type:', typeof error);
+                console.error('Error value:', error);
+                document.getElementById('recordsList').innerHTML =
+                    '<div class="loading">Error loading records: ' + error.toString() + '</div>';
+            })
+            .getADRs();
+    }
+
+    function displayRecords(records) {
+        const recordsList = document.getElementById('recordsList');
+
+        // Add multiple safety checks
+        if (!records) {
+            console.error('Records is falsy:', records);
+            recordsList.innerHTML = '<div class="loading">Error: Invalid data received</div>';
+            return;
+        }
+
+        if (!Array.isArray(records)) {
+            console.error('Records is not an array:', typeof records, records);
+            recordsList.innerHTML = '<div class="loading">Error: Expected array but got ' + typeof records + '</div>';
+            return;
+        }
+
+        if (records.length === 0) {
+            recordsList.innerHTML = '<div class="loading">No ADRs found. Add your first one above!</div>';
+            return;
+        }
+
+        // Sort by timestamp (newest first)
+        records.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+        recordsList.innerHTML = records.map(record => `
+                <div class="record-item">
+                    <div class="record-name">${escapeHtml(record.name)}</div>
+                    <div class="record-meta">
+                        By ${escapeHtml(record.redactor)} • ${formatDate(record.timestamp)}
+                    </div>
+                    ${record.tags ? `<div class="record-tags">${escapeHtml(record.tags)}</div>` : ''}
+                    <div style="margin-top: 8px;">
+                        <a href="${record.docLink}" target="_blank" class="record-link">
+                            📄 View Document
+                        </a>
+                    </div>
+                </div>
+            `).join('');
+    }
+
+    function showMessage(text, type) {
+        const messageEl = document.getElementById('message');
+        messageEl.textContent = text;
+        messageEl.className = 'message ' + type;
+        messageEl.style.display = 'block';
+
+        // Hide message after 5 seconds
+        setTimeout(() => {
+            messageEl.style.display = 'none';
+        }, 5000);
+    }
+
+    function clearForm() {
+        document.getElementById('adrForm').reset();
+    }
+
+    function isValidGoogleDocsUrl(url) {
+        return url.includes('docs.google.com/document/d/');
+    }
+
+    function formatDate(dateString) {
+        // Handle both Date objects and string dates
+        let date;
+        if (typeof dateString === 'string') {
+            date = new Date(dateString);
+        } else {
+            date = dateString;
+        }
+
+        // Check if date is valid
+        if (isNaN(date.getTime())) {
+            return 'Invalid date';
+        }
+
+        return date.toLocaleDateString() + ' at ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+    }
+
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+</script>
+</body>
+</html>
