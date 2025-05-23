@@ -313,6 +313,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            margin-bottom: 1.5rem;
         }
 
         .records-count {
@@ -322,6 +323,146 @@
             padding: 0.25rem 0.75rem;
             border-radius: 12px;
             font-weight: 600;
+        }
+
+        .search-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .search-bar {
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border: 2px solid var(--color-accent);
+            border-radius: var(--border-radius);
+            font-size: 0.875rem;
+            font-family: inherit;
+            transition: var(--transition);
+            background: var(--color-bg-secondary);
+            color: var(--color-text-primary);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--color-secondary);
+            box-shadow: 0 0 0 4px rgba(97, 135, 148, 0.1);
+        }
+
+        .search-input::placeholder {
+            color: var(--color-text-muted);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 0.875rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--color-text-muted);
+            font-size: 1rem;
+        }
+
+        .clear-search {
+            position: absolute;
+            right: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--color-text-muted);
+            cursor: pointer;
+            padding: 0.25rem;
+            border-radius: 50%;
+            transition: var(--transition);
+            font-size: 1rem;
+            display: none;
+        }
+
+        .clear-search:hover {
+            background: var(--color-accent);
+            color: var(--color-text-primary);
+        }
+
+        .filter-section {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .filter-label {
+            font-size: 0.8rem;
+            color: var(--color-text-secondary);
+            font-weight: 500;
+        }
+
+        .filter-select {
+            padding: 0.5rem 0.75rem;
+            border: 1px solid var(--color-accent);
+            border-radius: var(--border-radius);
+            font-size: 0.8rem;
+            font-family: inherit;
+            background: var(--color-bg-secondary);
+            color: var(--color-text-primary);
+            cursor: pointer;
+            transition: var(--transition);
+            min-width: 120px;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--color-secondary);
+        }
+
+        .active-filters {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+        }
+
+        .active-filter {
+            background: var(--color-secondary);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 16px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .remove-filter {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 0;
+            font-size: 0.875rem;
+            opacity: 0.8;
+            transition: var(--transition);
+        }
+
+        .remove-filter:hover {
+            opacity: 1;
+        }
+
+        .search-results-info {
+            font-size: 0.8rem;
+            color: var(--color-text-muted);
+            margin-top: 0.5rem;
+            padding: 0.5rem 0;
         }
 
         .records-list {
@@ -388,6 +529,19 @@
             width: 16px;
             height: 16px;
             opacity: 0.7;
+        }
+
+        .project-name {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, var(--color-secondary), var(--color-primary));
+            color: white;
+            padding: 0.375rem 1rem;
+            border-radius: var(--border-radius);
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
         }
 
         .record-tags {
@@ -583,6 +737,15 @@
                     </div>
 
                     <div class="input-group">
+                        <label class="input-label" for="projectName">
+                            Nom du projet
+                            <span class="required-indicator">*</span>
+                        </label>
+                        <input type="text" id="projectName" name="projectName" class="input-field" required
+                               placeholder="ex: E-commerce Platform, Mobile App, API Gateway">
+                    </div>
+
+                    <div class="input-group">
                         <label class="input-label" for="docLink">
                             Lien Google Doc
                             <span class="required-indicator">*</span>
@@ -628,6 +791,45 @@
                     📚 ADRs récents
                     <span class="records-count" id="recordsCount">0</span>
                 </div>
+
+                <div class="search-section">
+                    <div class="search-bar">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" id="searchInput" class="search-input"
+                               placeholder="Rechercher dans les ADRs (nom, projet, rédacteur, tags...)">
+                        <button class="clear-search" id="clearSearch" onclick="clearSearch()">✕</button>
+                    </div>
+
+                    <div class="filter-section">
+                        <div class="filter-group">
+                            <span class="filter-label">Projet:</span>
+                            <select id="projectFilter" class="filter-select">
+                                <option value="">Tous les projets</option>
+                            </select>
+                        </div>
+
+                        <div class="filter-group">
+                            <span class="filter-label">Rédacteur:</span>
+                            <select id="redactorFilter" class="filter-select">
+                                <option value="">Tous les rédacteurs</option>
+                            </select>
+                        </div>
+
+                        <div class="filter-group">
+                            <span class="filter-label">Période:</span>
+                            <select id="dateFilter" class="filter-select">
+                                <option value="">Toutes les dates</option>
+                                <option value="week">Cette semaine</option>
+                                <option value="month">Ce mois</option>
+                                <option value="quarter">Ce trimestre</option>
+                                <option value="year">Cette année</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="active-filters" id="activeFilters"></div>
+                    <div class="search-results-info" id="searchResultsInfo"></div>
+                </div>
             </div>
             <div id="recordsList" class="records-list">
                 <div class="loading-state">
@@ -641,12 +843,240 @@
 
 <script>
     let recordsData = [];
+    let filteredRecords = [];
+    let activeFilters = {
+        search: '',
+        project: '',
+        redactor: '',
+        date: ''
+    };
 
     // Load existing records when page loads
     document.addEventListener('DOMContentLoaded', function() {
         console.log('Page loaded, attempting to load records...');
         loadRecords();
+        setupSearchAndFilters();
     });
+
+    function setupSearchAndFilters() {
+        // Search input event listener
+        const searchInput = document.getElementById('searchInput');
+        const clearSearchBtn = document.getElementById('clearSearch');
+
+        searchInput.addEventListener('input', function(e) {
+            activeFilters.search = e.target.value;
+            applyFilters();
+
+            // Show/hide clear button
+            if (e.target.value) {
+                clearSearchBtn.style.display = 'block';
+            } else {
+                clearSearchBtn.style.display = 'none';
+            }
+        });
+
+        // Filter event listeners
+        document.getElementById('projectFilter').addEventListener('change', function(e) {
+            activeFilters.project = e.target.value;
+            applyFilters();
+        });
+
+        document.getElementById('redactorFilter').addEventListener('change', function(e) {
+            activeFilters.redactor = e.target.value;
+            applyFilters();
+        });
+
+        document.getElementById('dateFilter').addEventListener('change', function(e) {
+            activeFilters.date = e.target.value;
+            applyFilters();
+        });
+    }
+
+    function clearSearch() {
+        document.getElementById('searchInput').value = '';
+        document.getElementById('clearSearch').style.display = 'none';
+        activeFilters.search = '';
+        applyFilters();
+    }
+
+    function applyFilters() {
+        filteredRecords = recordsData.filter(record => {
+            // Search filter (searches across multiple fields)
+            if (activeFilters.search) {
+                const searchTerm = activeFilters.search.toLowerCase();
+                const searchableText = [
+                    record.name,
+                    record.projectName,
+                    record.redactor,
+                    record.tags
+                ].join(' ').toLowerCase();
+
+                if (!searchableText.includes(searchTerm)) {
+                    return false;
+                }
+            }
+
+            // Project filter
+            if (activeFilters.project && record.projectName !== activeFilters.project) {
+                return false;
+            }
+
+            // Redactor filter
+            if (activeFilters.redactor && record.redactor !== activeFilters.redactor) {
+                return false;
+            }
+
+            // Date filter
+            if (activeFilters.date) {
+                const recordDate = new Date(record.timestamp);
+                const now = new Date();
+
+                switch (activeFilters.date) {
+                    case 'week':
+                        const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+                        if (recordDate < weekAgo) return false;
+                        break;
+                    case 'month':
+                        if (recordDate.getMonth() !== now.getMonth() ||
+                            recordDate.getFullYear() !== now.getFullYear()) return false;
+                        break;
+                    case 'quarter':
+                        const currentQuarter = Math.floor(now.getMonth() / 3);
+                        const recordQuarter = Math.floor(recordDate.getMonth() / 3);
+                        if (recordQuarter !== currentQuarter ||
+                            recordDate.getFullYear() !== now.getFullYear()) return false;
+                        break;
+                    case 'year':
+                        if (recordDate.getFullYear() !== now.getFullYear()) return false;
+                        break;
+                }
+            }
+
+            return true;
+        });
+
+        displayRecords(filteredRecords);
+        updateActiveFiltersDisplay();
+        updateSearchResultsInfo();
+    }
+
+    function updateActiveFiltersDisplay() {
+        const activeFiltersContainer = document.getElementById('activeFilters');
+        activeFiltersContainer.innerHTML = '';
+
+        const filters = [];
+
+        if (activeFilters.search) {
+            filters.push({
+                type: 'search',
+                label: `Recherche: "${activeFilters.search}"`,
+                value: activeFilters.search
+            });
+        }
+
+        if (activeFilters.project) {
+            filters.push({
+                type: 'project',
+                label: `Projet: ${activeFilters.project}`,
+                value: activeFilters.project
+            });
+        }
+
+        if (activeFilters.redactor) {
+            filters.push({
+                type: 'redactor',
+                label: `Rédacteur: ${activeFilters.redactor}`,
+                value: activeFilters.redactor
+            });
+        }
+
+        if (activeFilters.date) {
+            const dateLabels = {
+                'week': 'Cette semaine',
+                'month': 'Ce mois',
+                'quarter': 'Ce trimestre',
+                'year': 'Cette année'
+            };
+            filters.push({
+                type: 'date',
+                label: `Période: ${dateLabels[activeFilters.date]}`,
+                value: activeFilters.date
+            });
+        }
+
+        filters.forEach(filter => {
+            const filterElement = document.createElement('div');
+            filterElement.className = 'active-filter';
+            filterElement.innerHTML = `
+                ${filter.label}
+                <button class="remove-filter" onclick="removeFilter('${filter.type}')">✕</button>
+            `;
+            activeFiltersContainer.appendChild(filterElement);
+        });
+    }
+
+    function removeFilter(filterType) {
+        activeFilters[filterType] = '';
+
+        // Update corresponding UI elements
+        switch (filterType) {
+            case 'search':
+                document.getElementById('searchInput').value = '';
+                document.getElementById('clearSearch').style.display = 'none';
+                break;
+            case 'project':
+                document.getElementById('projectFilter').value = '';
+                break;
+            case 'redactor':
+                document.getElementById('redactorFilter').value = '';
+                break;
+            case 'date':
+                document.getElementById('dateFilter').value = '';
+                break;
+        }
+
+        applyFilters();
+    }
+
+    function updateSearchResultsInfo() {
+        const info = document.getElementById('searchResultsInfo');
+        const hasFilters = Object.values(activeFilters).some(filter => filter !== '');
+
+        if (hasFilters) {
+            const total = recordsData.length;
+            const filtered = filteredRecords.length;
+            info.textContent = `Affichage de ${filtered} sur ${total} ADR(s)`;
+            info.style.display = 'block';
+        } else {
+            info.style.display = 'none';
+        }
+    }
+
+    function populateFilterOptions() {
+        // Get unique values for filters
+        const projects = [...new Set(recordsData.map(record => record.projectName).filter(Boolean))];
+        const redactors = [...new Set(recordsData.map(record => record.redactor).filter(Boolean))];
+
+        // Populate project filter
+        const projectFilter = document.getElementById('projectFilter');
+        projectFilter.innerHTML = '<option value="">Tous les projets</option>';
+        projects.sort().forEach(project => {
+            const option = document.createElement('option');
+            option.value = project;
+            option.textContent = project;
+            projectFilter.appendChild(option);
+        });
+
+        // Populate redactor filter
+        const redactorFilter = document.getElementById('redactorFilter');
+        redactorFilter.innerHTML = '<option value="">Tous les rédacteurs</option>';
+        redactors.sort().forEach(redactor => {
+            const option = document.createElement('option');
+            option.value = redactor;
+            option.textContent = redactor;
+            redactorFilter.appendChild(option);
+        });
+    }
 
     // Handle form submission
     document.getElementById('adrForm').addEventListener('submit', function(e) {
@@ -654,6 +1084,7 @@
 
         const formData = {
             name: document.getElementById('name').value,
+            projectName: document.getElementById('projectName').value,
             docLink: document.getElementById('docLink').value,
             tags: document.getElementById('tags').value,
             redactor: document.getElementById('redactor').value
@@ -705,8 +1136,9 @@
                     return;
                 }
                 recordsData = records;
-                displayRecords(records);
-                updateStats(records);
+                filteredRecords = [...records]; // Initialize filtered records
+                populateFilterOptions();
+                applyFilters(); // This will display records and update stats
             })
             .withFailureHandler(function(error) {
                 console.error('FAILURE - Failed to load records:', error);
@@ -725,11 +1157,16 @@
         }
 
         if (records.length === 0) {
+            const hasFilters = Object.values(activeFilters).some(filter => filter !== '');
+            const emptyMessage = hasFilters ?
+                'Aucun ADR ne correspond à vos critères de recherche' :
+                'Commencez par ajouter votre premier ADR avec le formulaire';
+
             recordsList.innerHTML = `
                     <div class="empty-state">
                         <div class="empty-icon">📋</div>
                         <div class="empty-title">Aucun ADR trouvé</div>
-                        <div class="empty-description">Commencez par ajouter votre premier ADR avec le formulaire</div>
+                        <div class="empty-description">${emptyMessage}</div>
                     </div>
                 `;
             return;
@@ -742,6 +1179,11 @@
                 <div class="record-item">
                     <div class="record-content">
                         <div class="record-name">${escapeHtml(record.name)}</div>
+                        ${record.projectName ? `
+                            <div class="project-name">
+                                🚀 ${escapeHtml(record.projectName)}
+                            </div>
+                        ` : ''}
                         <div class="record-meta">
                             <div class="meta-item">
                                 <span class="meta-icon">👤</span>
@@ -765,21 +1207,23 @@
                     </div>
                 </div>
             `).join('');
+
+        updateStats(records);
     }
 
     function updateStats(records) {
-        const totalCount = records.length;
+        const totalCount = recordsData.length; // Always show total from all records
         const currentMonth = new Date().getMonth();
         const currentYear = new Date().getFullYear();
 
-        const recentCount = records.filter(record => {
+        const recentCount = recordsData.filter(record => {
             const recordDate = new Date(record.timestamp);
             return recordDate.getMonth() === currentMonth && recordDate.getFullYear() === currentYear;
         }).length;
 
         document.getElementById('totalADRs').textContent = totalCount;
         document.getElementById('recentADRs').textContent = recentCount;
-        document.getElementById('recordsCount').textContent = totalCount;
+        document.getElementById('recordsCount').textContent = records.length; // Show filtered count
     }
 
     function showMessage(text, type) {
