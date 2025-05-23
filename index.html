@@ -3,8 +3,17 @@
 <head>
     <base target="_top">
     <title>Architecture Decision Records</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Inline CSS to avoid loading issues -->
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@100;200;300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         :root {
             /* Dark mode colors (default) */
@@ -55,14 +64,8 @@
             --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.2);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
-            font-family: 'JetBrains Mono', 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+            font-family: 'Courier New', monospace;
             background: var(--color-bg-primary);
             color: var(--color-text-primary);
             line-height: 1.5;
@@ -132,7 +135,7 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Courier New', monospace;
             font-size: 0.8rem;
             color: var(--color-text-secondary);
             text-transform: uppercase;
@@ -146,25 +149,8 @@
             color: var(--color-text-primary);
         }
 
-        .theme-toggle::before {
-            content: '🌙';
-            font-size: 1rem;
-        }
-
-        [data-theme="light"] .theme-toggle::before {
-            content: '☀️';
-        }
-
-        .theme-toggle::after {
-            content: 'dark';
-        }
-
-        [data-theme="light"] .theme-toggle::after {
-            content: 'light';
-        }
-
         .app-title {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Courier New', monospace;
             font-size: 2.5rem;
             font-weight: 600;
             margin-bottom: 0.5rem;
@@ -191,16 +177,6 @@
             position: relative;
         }
 
-        .app-title .highlight::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            width: 100%;
-            height: 1px;
-            background: var(--color-primary);
-        }
-
         .app-title .cursor {
             color: var(--color-terminal-green);
             animation: blink 1.2s infinite;
@@ -213,18 +189,13 @@
         }
 
         .app-subtitle {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Courier New', monospace;
             font-size: 0.9rem;
             color: var(--color-text-secondary);
             font-weight: 400;
             letter-spacing: 0.01em;
             margin-top: 1rem;
             margin-bottom: 2rem;
-        }
-
-        .app-subtitle .code-comment {
-            color: var(--color-text-muted);
-            font-style: normal;
         }
 
         .stats-grid {
@@ -243,21 +214,12 @@
             position: relative;
         }
 
-        .stat-item::before {
-            content: '●';
-            position: absolute;
-            top: 0.75rem;
-            left: 0.75rem;
-            color: var(--color-terminal-green);
-            font-size: 0.6rem;
-        }
-
         .stat-number {
             font-size: 1.6rem;
             font-weight: 700;
             color: var(--color-primary);
             margin-bottom: 0.25rem;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Courier New', monospace;
         }
 
         .stat-label {
@@ -265,7 +227,7 @@
             color: var(--color-text-secondary);
             text-transform: uppercase;
             letter-spacing: 0.1em;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Courier New', monospace;
         }
 
         .main-content {
@@ -290,7 +252,7 @@
             padding: 1.25rem 1.5rem;
             background: none;
             border: none;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Courier New', monospace;
             font-size: 0.875rem;
             font-weight: 500;
             color: var(--color-text-muted);
@@ -300,30 +262,9 @@
             letter-spacing: 0.01em;
         }
 
-        .tab-button::before {
-            content: '[';
-            margin-right: 0.25rem;
-            color: var(--color-text-muted);
-        }
-
-        .tab-button::after {
-            content: ']';
-            margin-left: 0.25rem;
-            color: var(--color-text-muted);
-        }
-
         .tab-button.active {
             color: var(--color-primary);
             background: var(--color-bg-secondary);
-        }
-
-        .tab-button.active::before,
-        .tab-button.active::after {
-            color: var(--color-primary);
-        }
-
-        .tab-button.active::before {
-            content: '> [';
         }
 
         .tab-button:hover:not(.active) {
@@ -342,7 +283,6 @@
             display: flex;
         }
 
-        /* Add Tab Styles */
         .add-tab {
             padding: 2.5rem;
             overflow-y: auto;
@@ -356,7 +296,7 @@
             display: none;
             font-weight: 400;
             font-size: 0.875rem;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Courier New', monospace;
         }
 
         .alert-success {
@@ -365,22 +305,10 @@
             color: var(--color-text-primary);
         }
 
-        .alert-success::before {
-            content: '✓ ';
-            color: var(--color-success);
-            font-weight: 700;
-        }
-
         .alert-error {
             background: rgba(218, 54, 51, 0.1);
             border-left-color: var(--color-error);
             color: var(--color-text-primary);
-        }
-
-        .alert-error::before {
-            content: '✗ ';
-            color: var(--color-error);
-            font-weight: 700;
         }
 
         .input-group {
@@ -395,15 +323,9 @@
             align-items: center;
             gap: 0.5rem;
             font-size: 0.8rem;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Courier New', monospace;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-        }
-
-        .input-label::before {
-            content: '>';
-            color: var(--color-terminal-green);
-            font-weight: 700;
         }
 
         .required-indicator {
@@ -417,7 +339,7 @@
             border: 1px solid var(--color-accent);
             border-radius: var(--border-radius);
             font-size: 0.875rem;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Courier New', monospace;
             transition: var(--transition);
             background: var(--color-bg-tertiary);
             color: var(--color-text-primary);
@@ -430,21 +352,104 @@
             box-shadow: 0 0 0 2px rgba(0, 216, 255, 0.1);
         }
 
-        .input-field::placeholder {
+        .tags-selector {
+            position: relative;
+        }
+
+        .tags-display {
+            min-height: 45px;
+            padding: 0.875rem 1rem;
+            border: 1px solid var(--color-accent);
+            border-radius: var(--border-radius);
+            background: var(--color-bg-tertiary);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .tags-display:hover {
+            border-color: var(--color-primary);
+        }
+
+        .tags-display.open {
+            border-color: var(--color-primary);
+            background: var(--color-bg-secondary);
+            box-shadow: 0 0 0 2px rgba(0, 216, 255, 0.1);
+        }
+
+        .selected-tag {
+            background: var(--color-primary);
+            color: var(--color-bg-primary);
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--border-radius);
+            font-size: 0.7rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: 'Courier New', monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .remove-tag {
+            background: none;
+            border: none;
+            color: inherit;
+            cursor: pointer;
+            padding: 0;
+            font-size: 0.875rem;
+            opacity: 0.8;
+            transition: var(--transition);
+        }
+
+        .tags-placeholder {
             color: var(--color-text-muted);
             font-style: italic;
+            font-size: 0.875rem;
         }
 
-        .textarea-field {
-            min-height: 80px;
-            resize: vertical;
-            font-family: inherit;
+        .tags-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: var(--color-bg-secondary);
+            border: 1px solid var(--color-accent);
+            border-top: none;
+            border-radius: 0 0 var(--border-radius) var(--border-radius);
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+            box-shadow: var(--shadow-md);
         }
 
-        .button-group {
+        .tags-dropdown.show {
+            display: block;
+        }
+
+        .tag-option {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            transition: var(--transition);
             display: flex;
-            gap: 1rem;
-            margin-top: 2rem;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+            font-family: 'Courier New', monospace;
+        }
+
+        .tag-option:hover {
+            background: var(--color-accent);
+        }
+
+        .tag-option.selected {
+            background: var(--color-primary);
+            color: var(--color-bg-primary);
         }
 
         .btn {
@@ -453,7 +458,7 @@
             border-radius: var(--border-radius);
             font-size: 0.875rem;
             font-weight: 500;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Courier New', monospace;
             cursor: pointer;
             transition: var(--transition);
             display: inline-flex;
@@ -471,11 +476,6 @@
             border-color: var(--color-primary);
             box-shadow: var(--shadow-sm);
             flex: 1;
-        }
-
-        .btn-primary::before {
-            content: '$';
-            font-weight: 700;
         }
 
         .btn-primary:hover:not(:disabled) {
@@ -497,18 +497,18 @@
             flex: 1;
         }
 
-        .btn-secondary::before {
-            content: '~';
-            font-weight: 700;
-        }
-
         .btn-secondary:hover {
             background: var(--color-accent);
             border-color: var(--color-text-secondary);
             color: var(--color-text-primary);
         }
 
-        /* Search Tab Styles */
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
         .search-tab {
             display: flex;
             flex-direction: column;
@@ -537,7 +537,7 @@
             border: 1px solid var(--color-accent);
             border-radius: var(--border-radius);
             font-size: 0.875rem;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Courier New', monospace;
             transition: var(--transition);
             background: var(--color-bg-secondary);
             color: var(--color-text-primary);
@@ -547,11 +547,6 @@
             outline: none;
             border-color: var(--color-primary);
             box-shadow: 0 0 0 2px rgba(0, 216, 255, 0.1);
-        }
-
-        .search-input::placeholder {
-            color: var(--color-text-muted);
-            font-style: italic;
         }
 
         .clear-search {
@@ -568,11 +563,6 @@
             transition: var(--transition);
             font-size: 1rem;
             display: none;
-        }
-
-        .clear-search:hover {
-            background: var(--color-accent);
-            color: var(--color-text-primary);
         }
 
         .filter-section {
@@ -592,15 +582,9 @@
             font-size: 0.75rem;
             color: var(--color-text-secondary);
             font-weight: 500;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Courier New', monospace;
             text-transform: uppercase;
             letter-spacing: 0.1em;
-        }
-
-        .filter-label::before {
-            content: '--';
-            margin-right: 0.25rem;
-            color: var(--color-terminal-green);
         }
 
         .filter-select {
@@ -608,7 +592,7 @@
             border: 1px solid var(--color-accent);
             border-radius: var(--border-radius);
             font-size: 0.75rem;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Courier New', monospace;
             background: var(--color-bg-secondary);
             color: var(--color-text-primary);
             cursor: pointer;
@@ -619,55 +603,6 @@
         .filter-select:focus {
             outline: none;
             border-color: var(--color-primary);
-        }
-
-        .active-filters {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-            margin-top: 0.5rem;
-        }
-
-        .active-filter {
-            background: var(--color-primary);
-            color: var(--color-bg-primary);
-            padding: 0.25rem 0.75rem;
-            border-radius: var(--border-radius);
-            font-size: 0.7rem;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-family: 'JetBrains Mono', monospace;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .active-filter::before {
-            content: '×';
-            font-weight: 700;
-        }
-
-        .remove-filter {
-            background: none;
-            border: none;
-            color: inherit;
-            cursor: pointer;
-            padding: 0;
-            font-size: 0.875rem;
-            opacity: 0.8;
-            transition: var(--transition);
-        }
-
-        .remove-filter:hover {
-            opacity: 1;
-        }
-
-        .search-results-info {
-            font-size: 0.8rem;
-            color: var(--color-text-muted);
-            margin-top: 0.5rem;
-            padding: 0.5rem 0;
         }
 
         .records-list-container {
@@ -687,18 +622,12 @@
         }
 
         .records-title {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Courier New', monospace;
             font-size: 1rem;
             font-weight: 600;
             color: var(--color-text-primary);
             letter-spacing: 0.05em;
             text-transform: uppercase;
-        }
-
-        .records-title::before {
-            content: '# ';
-            color: var(--color-terminal-green);
-            font-weight: 700;
         }
 
         .records-count {
@@ -708,7 +637,7 @@
             padding: 0.25rem 0.75rem;
             border-radius: var(--border-radius);
             font-weight: 600;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Courier New', monospace;
             text-transform: uppercase;
             letter-spacing: 0.1em;
         }
@@ -773,7 +702,7 @@
             font-weight: 600;
             color: var(--color-text-primary);
             margin: 0;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Courier New', monospace;
         }
 
         .project-name {
@@ -787,16 +716,9 @@
             font-weight: 500;
             line-height: 1;
             white-space: nowrap;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Courier New', monospace;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-        }
-
-        .project-name::before {
-            content: '@';
-            margin-right: 0.25rem;
-            color: var(--color-terminal-blue);
-            font-weight: 700;
         }
 
         .record-meta {
@@ -830,16 +752,9 @@
             font-weight: 500;
             line-height: 1;
             white-space: nowrap;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Courier New', monospace;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-        }
-
-        .tag::before {
-            content: '#';
-            color: var(--color-terminal-yellow);
-            font-weight: 700;
-            margin-right: 0.15rem;
         }
 
         .record-link {
@@ -856,14 +771,9 @@
             transition: var(--transition);
             white-space: nowrap;
             flex-shrink: 0;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: 'Courier New', monospace;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-        }
-
-        .record-link::before {
-            content: '→ ';
-            font-weight: 700;
         }
 
         .record-link:hover {
@@ -918,31 +828,47 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Custom scrollbar */
-        .records-list::-webkit-scrollbar {
-            width: 4px;
+        .active-filters {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
         }
 
-        .records-list::-webkit-scrollbar-track {
-            background: var(--color-accent);
-        }
-
-        .records-list::-webkit-scrollbar-thumb {
+        .active-filter {
             background: var(--color-primary);
-            border-radius: 2px;
+            color: var(--color-bg-primary);
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--border-radius);
+            font-size: 0.7rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: 'Courier New', monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
-        .records-list::-webkit-scrollbar-thumb:hover {
-            background: var(--color-secondary);
+        .remove-filter {
+            background: none;
+            border: none;
+            color: inherit;
+            cursor: pointer;
+            padding: 0;
+            font-size: 0.875rem;
+            opacity: 0.8;
+            transition: var(--transition);
+        }
+
+        .search-results-info {
+            font-size: 0.8rem;
+            color: var(--color-text-muted);
+            margin-top: 0.5rem;
+            padding: 0.5rem 0;
         }
 
         /* Responsive Design */
-        @media (max-width: 1024px) {
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
         @media (max-width: 768px) {
             .app-container {
                 padding: 1rem;
@@ -964,10 +890,6 @@
 
             .app-title {
                 font-size: 2rem;
-            }
-
-            .app-title .prompt {
-                font-size: 1.5rem;
             }
 
             .stats-grid {
@@ -1012,6 +934,11 @@
     </style>
 </head>
 <body>
+<!-- Test to see if CSS is loading -->
+<div style="background: red; color: white; padding: 10px; margin: 10px;">
+    🔧 CSS TEST - If you see this red box, CSS is loading! If not, there's a loading issue.
+</div>
+
 <div class="app-container">
     <!-- Header with beautiful title and stats -->
     <div class="header-card">
@@ -1042,6 +969,7 @@
             </div>
 
             <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+                Theme
             </button>
         </div>
     </div>
@@ -1060,7 +988,7 @@
                 <div class="search-section">
                     <div class="search-bar">
                         <input type="text" id="searchInput" class="search-input"
-                               placeholder="Rechercher dans les ADRs (nom, projet, rédacteur, tags...)">
+                               placeholder="Rechercher dans les ADRs...">
                         <button class="clear-search" id="clearSearch" onclick="clearSearch()">✕</button>
                     </div>
 
@@ -1129,8 +1057,9 @@
                         Nom du projet
                         <span class="required-indicator">*</span>
                     </label>
-                    <input type="text" id="projectName" name="projectName" class="input-field" required
-                           placeholder="ex: E-commerce Platform, Mobile App, API Gateway">
+                    <select id="projectName" name="projectName" class="input-field" required>
+                        <option value="">Sélectionnez un projet...</option>
+                    </select>
                 </div>
 
                 <div class="input-group">
@@ -1146,8 +1075,15 @@
                     <label class="input-label" for="tags">
                         Tags
                     </label>
-                    <textarea id="tags" name="tags" class="input-field textarea-field"
-                              placeholder="ex: database, backend, performance (séparez par des virgules)"></textarea>
+                    <div class="tags-selector">
+                        <div class="tags-display" id="tagsDisplay" onclick="toggleTagsDropdown()">
+                            <span class="tags-placeholder">Sélectionnez des tags...</span>
+                        </div>
+                        <div class="tags-dropdown" id="tagsDropdown">
+                            <!-- Tags options will be populated here -->
+                        </div>
+                    </div>
+                    <input type="hidden" id="selectedTags" name="tags">
                 </div>
 
                 <div class="input-group">
@@ -1155,8 +1091,9 @@
                         Rédacteur
                         <span class="required-indicator">*</span>
                     </label>
-                    <input type="text" id="redactor" name="redactor" class="input-field" required
-                           placeholder="ex: Jean Dupont">
+                    <select id="redactor" name="redactor" class="input-field" required>
+                        <option value="">Sélectionnez un rédacteur...</option>
+                    </select>
                 </div>
 
                 <div class="button-group">
@@ -1166,6 +1103,9 @@
                     <button type="button" class="btn btn-secondary" onclick="clearForm()">
                         Réinitialiser
                     </button>
+                    <button type="button" class="btn btn-secondary" onclick="refreshConfiguration()" title="Actualiser les options depuis la feuille Configuration">
+                        🔄 Actualiser Config
+                    </button>
                 </div>
             </form>
         </div>
@@ -1173,14 +1113,13 @@
 </div>
 
 <script>
+    // Configuration and global variables
     let recordsData = [];
     let filteredRecords = [];
-    let activeFilters = {
-        search: '',
-        project: '',
-        redactor: '',
-        date: ''
-    };
+    let activeFilters = { search: '', project: '', redactor: '', date: '' };
+    let availableTags = [];
+    let selectedTags = [];
+    let configData = { tags: [], projects: [], redactors: [] };
 
     // Theme management
     function initializeTheme() {
@@ -1191,66 +1130,213 @@
     function toggleTheme() {
         const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
         const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-
         document.documentElement.setAttribute('data-theme', newTheme);
         localStorage.setItem('adr-theme', newTheme);
     }
 
-    // Tab switching functionality
+    // Tab switching
     function switchTab(tabName) {
-        console.log('Switching to tab:', tabName);
-
-        // Update tab buttons
-        document.querySelectorAll('.tab-button').forEach(btn => {
-            btn.classList.remove('active');
-        });
-
-        // Add active class to the clicked button
+        document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
         event.target.classList.add('active');
 
-        // Hide all tab content explicitly
         document.querySelectorAll('.tab-content').forEach(content => {
             content.classList.remove('active');
-            content.style.display = 'none'; // Force hide
+            content.style.display = 'none';
         });
 
-        // Show the target tab explicitly
         const targetTab = document.getElementById(tabName + 'Tab');
         if (targetTab) {
             targetTab.classList.add('active');
-            targetTab.style.display = 'flex'; // Force show
-            console.log('Activated tab:', tabName + 'Tab');
-        } else {
-            console.error('Tab not found:', tabName + 'Tab');
+            targetTab.style.display = 'flex';
         }
     }
 
-    // Load existing records when page loads
+    // Initialize on page load
     document.addEventListener('DOMContentLoaded', function() {
-        console.log('Page loaded, attempting to load records...');
-        initializeTheme(); // Initialize theme on page load
+        console.log('Page loaded...');
+        initializeTheme();
+
+        // Remove the test box after 3 seconds
+        setTimeout(() => {
+            const testBox = document.querySelector('div[style*="background: red"]');
+            if (testBox) testBox.remove();
+        }, 3000);
+
+        loadConfiguration();
         loadRecords();
         setupSearchAndFilters();
+        setupTagsSelector();
     });
 
+    // Load configuration from Google Sheets
+    function loadConfiguration() {
+        console.log('Loading configuration from Google Sheets...');
+
+        // Show loading indicator
+        showConfigurationLoading(true);
+
+        google.script.run
+            .withSuccessHandler(function(config) {
+                console.log('Configuration loaded from server:', config);
+                configData = config;
+                populateFormOptions();
+                showConfigurationLoading(false);
+            })
+            .withFailureHandler(function(error) {
+                console.error('Failed to load configuration:', error);
+                // Use fallback data
+                configData = {
+                    tags: ['database', 'backend', 'frontend', 'api'],
+                    projects: ['E-commerce Platform', 'Mobile App'],
+                    redactors: ['Jean Dupont', 'Marie Martin']
+                };
+                populateFormOptions();
+                showConfigurationLoading(false);
+                showMessage('Attention: Configuration par défaut utilisée. Erreur: ' + error.toString(), 'warning');
+            })
+            .getConfiguration();
+    }
+
+    // Show/hide loading indicators for configuration
+    function showConfigurationLoading(isLoading) {
+        const projectSelect = document.getElementById('projectName');
+        const redactorSelect = document.getElementById('redactor');
+        const tagsDisplay = document.getElementById('tagsDisplay');
+
+        if (isLoading) {
+            projectSelect.innerHTML = '<option value="">Chargement...</option>';
+            redactorSelect.innerHTML = '<option value="">Chargement...</option>';
+            tagsDisplay.innerHTML = '<span class="tags-placeholder">Chargement de la configuration...</span>';
+        }
+    }
+
+    function populateFormOptions() {
+        console.log('Populating form options with:', configData);
+
+        // Populate project select
+        const projectSelect = document.getElementById('projectName');
+        projectSelect.innerHTML = '<option value="">Sélectionnez un projet...</option>';
+        if (configData.projects && configData.projects.length > 0) {
+            configData.projects.forEach(project => {
+                const option = document.createElement('option');
+                option.value = project;
+                option.textContent = project;
+                projectSelect.appendChild(option);
+            });
+        }
+
+        // Populate redactor select
+        const redactorSelect = document.getElementById('redactor');
+        redactorSelect.innerHTML = '<option value="">Sélectionnez un rédacteur...</option>';
+        if (configData.redactors && configData.redactors.length > 0) {
+            configData.redactors.forEach(redactor => {
+                const option = document.createElement('option');
+                option.value = redactor;
+                option.textContent = redactor;
+                redactorSelect.appendChild(option);
+            });
+        }
+
+        // Update available tags and refresh the tags selector
+        if (configData.tags && configData.tags.length > 0) {
+            availableTags = configData.tags;
+            renderTagsDropdown();
+            updateTagsDisplay(); // Refresh the display in case tags were removed
+        }
+
+        console.log('Form options populated successfully');
+    }
+
+    // Add refresh configuration button functionality
+    function refreshConfiguration() {
+        console.log('Manually refreshing configuration...');
+        showMessage('Actualisation de la configuration...', 'info');
+        loadConfiguration();
+    }
+
+    function setupTagsSelector() {
+        document.addEventListener('click', function(e) {
+            const tagsSelector = document.querySelector('.tags-selector');
+            if (!tagsSelector.contains(e.target)) {
+                document.getElementById('tagsDropdown').classList.remove('show');
+                document.getElementById('tagsDisplay').classList.remove('open');
+            }
+        });
+    }
+
+    function toggleTagsDropdown() {
+        const dropdown = document.getElementById('tagsDropdown');
+        const display = document.getElementById('tagsDisplay');
+
+        dropdown.classList.toggle('show');
+        display.classList.toggle('open');
+    }
+
+    function renderTagsDropdown() {
+        const dropdown = document.getElementById('tagsDropdown');
+        dropdown.innerHTML = '';
+
+        availableTags.forEach(tag => {
+            const option = document.createElement('div');
+            option.className = `tag-option ${selectedTags.includes(tag) ? 'selected' : ''}`;
+            option.textContent = tag;
+            option.onclick = () => toggleTag(tag);
+            dropdown.appendChild(option);
+        });
+    }
+
+    function toggleTag(tag) {
+        const index = selectedTags.indexOf(tag);
+        if (index > -1) {
+            selectedTags.splice(index, 1);
+        } else {
+            selectedTags.push(tag);
+        }
+
+        updateTagsDisplay();
+        renderTagsDropdown();
+        document.getElementById('selectedTags').value = selectedTags.join(', ');
+    }
+
+    function removeTag(tag) {
+        const index = selectedTags.indexOf(tag);
+        if (index > -1) {
+            selectedTags.splice(index, 1);
+            updateTagsDisplay();
+            renderTagsDropdown();
+            document.getElementById('selectedTags').value = selectedTags.join(', ');
+        }
+    }
+
+    function updateTagsDisplay() {
+        const display = document.getElementById('tagsDisplay');
+        display.innerHTML = '';
+
+        if (selectedTags.length === 0) {
+            const placeholder = document.createElement('span');
+            placeholder.className = 'tags-placeholder';
+            placeholder.textContent = 'Sélectionnez des tags...';
+            display.appendChild(placeholder);
+        } else {
+            selectedTags.forEach(tag => {
+                const tagElement = document.createElement('div');
+                tagElement.className = 'selected-tag';
+                tagElement.innerHTML = `${tag} <button type="button" class="remove-tag" onclick="removeTag('${tag}')">✕</button>`;
+                display.appendChild(tagElement);
+            });
+        }
+    }
+
     function setupSearchAndFilters() {
-        // Search input event listener
         const searchInput = document.getElementById('searchInput');
         const clearSearchBtn = document.getElementById('clearSearch');
 
         searchInput.addEventListener('input', function(e) {
             activeFilters.search = e.target.value;
             applyFilters();
-
-            // Show/hide clear button
-            if (e.target.value) {
-                clearSearchBtn.style.display = 'block';
-            } else {
-                clearSearchBtn.style.display = 'none';
-            }
+            clearSearchBtn.style.display = e.target.value ? 'block' : 'none';
         });
 
-        // Filter event listeners
         document.getElementById('projectFilter').addEventListener('change', function(e) {
             activeFilters.project = e.target.value;
             applyFilters();
@@ -1275,29 +1361,37 @@
     }
 
     function applyFilters() {
+        console.log('Applying filters...', activeFilters);
+        console.log('Total records to filter:', recordsData.length);
+
         filteredRecords = recordsData.filter(record => {
+            console.log('Filtering record:', record);
+
             // Search filter (searches across multiple fields)
             if (activeFilters.search) {
                 const searchTerm = activeFilters.search.toLowerCase();
                 const searchableText = [
-                    record.name,
-                    record.projectName,
-                    record.redactor,
-                    record.tags
+                    record.name || '',
+                    record.projectName || '',
+                    record.redactor || '',
+                    record.tags || ''
                 ].join(' ').toLowerCase();
 
                 if (!searchableText.includes(searchTerm)) {
+                    console.log('Record filtered out by search:', record.name);
                     return false;
                 }
             }
 
             // Project filter
             if (activeFilters.project && record.projectName !== activeFilters.project) {
+                console.log('Record filtered out by project:', record.name);
                 return false;
             }
 
             // Redactor filter
             if (activeFilters.redactor && record.redactor !== activeFilters.redactor) {
+                console.log('Record filtered out by redactor:', record.name);
                 return false;
             }
 
@@ -1309,30 +1403,238 @@
                 switch (activeFilters.date) {
                     case 'week':
                         const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-                        if (recordDate < weekAgo) return false;
+                        if (recordDate < weekAgo) {
+                            console.log('Record filtered out by date (week):', record.name);
+                            return false;
+                        }
                         break;
                     case 'month':
                         if (recordDate.getMonth() !== now.getMonth() ||
-                            recordDate.getFullYear() !== now.getFullYear()) return false;
+                            recordDate.getFullYear() !== now.getFullYear()) {
+                            console.log('Record filtered out by date (month):', record.name);
+                            return false;
+                        }
                         break;
                     case 'quarter':
                         const currentQuarter = Math.floor(now.getMonth() / 3);
                         const recordQuarter = Math.floor(recordDate.getMonth() / 3);
                         if (recordQuarter !== currentQuarter ||
-                            recordDate.getFullYear() !== now.getFullYear()) return false;
+                            recordDate.getFullYear() !== now.getFullYear()) {
+                            console.log('Record filtered out by date (quarter):', record.name);
+                            return false;
+                        }
                         break;
                     case 'year':
-                        if (recordDate.getFullYear() !== now.getFullYear()) return false;
+                        if (recordDate.getFullYear() !== now.getFullYear()) {
+                            console.log('Record filtered out by date (year):', record.name);
+                            return false;
+                        }
                         break;
                 }
             }
 
+            console.log('Record passed all filters:', record.name);
             return true;
         });
 
+        console.log('Filtered records count:', filteredRecords.length);
         displayRecords(filteredRecords);
         updateActiveFiltersDisplay();
         updateSearchResultsInfo();
+    }
+
+    function loadRecords() {
+        console.log('loadRecords called');
+
+        // Show loading state
+        document.getElementById('recordsList').innerHTML = `
+                <div class="loading-state">
+                    <div class="loading-spinner"></div>
+                    Chargement des enregistrements...
+                </div>
+            `;
+
+        google.script.run
+            .withSuccessHandler(function(records) {
+                console.log('SUCCESS - Received records from server:', records);
+
+                if (records === null || records === undefined) {
+                    console.error('Records is null or undefined');
+                    document.getElementById('recordsList').innerHTML =
+                        '<div class="loading-state">Erreur: Aucune donnée reçue du serveur</div>';
+                    return;
+                }
+
+                recordsData = records;
+                filteredRecords = [...records]; // Initialize filtered records
+                console.log('Records data set:', recordsData);
+                populateFilterOptions();
+                applyFilters(); // This will display records and update stats
+            })
+            .withFailureHandler(function(error) {
+                console.error('FAILURE - Failed to load records:', error);
+                document.getElementById('recordsList').innerHTML =
+                    '<div class="loading-state">Erreur de chargement: ' + error.toString() + '</div>';
+            })
+            .getADRs();
+    }
+
+    function displayRecords(records) {
+        console.log('Displaying records:', records);
+        const recordsList = document.getElementById('recordsList');
+
+        if (!records || !Array.isArray(records)) {
+            console.error('Invalid records data:', records);
+            recordsList.innerHTML = '<div class="loading-state">Erreur: Données invalides reçues</div>';
+            return;
+        }
+
+        if (records.length === 0) {
+            const hasFilters = Object.values(activeFilters).some(filter => filter !== '');
+            const emptyMessage = hasFilters ?
+                'Aucun ADR ne correspond à vos critères de recherche' :
+                'Commencez par ajouter votre premier ADR avec l\'onglet "Ajouter un ADR"';
+
+            recordsList.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-title">Aucun ADR trouvé</div>
+                        <div class="empty-description">${emptyMessage}</div>
+                    </div>
+                `;
+            updateStats(records);
+            return;
+        }
+
+        // Sort by timestamp (newest first)
+        const sortedRecords = [...records].sort((a, b) => {
+            const dateA = new Date(a.timestamp);
+            const dateB = new Date(b.timestamp);
+            return dateB - dateA;
+        });
+
+        recordsList.innerHTML = sortedRecords.map(record => {
+            // Safely handle missing data
+            const name = escapeHtml(record.name || 'Sans nom');
+            const projectName = record.projectName ? escapeHtml(record.projectName) : '';
+            const redactor = escapeHtml(record.redactor || 'Inconnu');
+            const docLink = record.docLink || '#';
+            const timestamp = record.timestamp ? formatDate(record.timestamp) : 'Date inconnue';
+            const tags = record.tags || '';
+
+            return `
+                    <div class="record-item">
+                        <div class="record-content">
+                            <div class="record-main-info">
+                                <div class="record-header">
+                                    <div class="record-name">${name}</div>
+                                    ${projectName ? `<div class="project-name">${projectName}</div>` : ''}
+                                </div>
+                                <div class="record-meta">
+                                    <div class="meta-item">👤 ${redactor}</div>
+                                    <div class="meta-item">📅 ${timestamp}</div>
+                                </div>
+                                ${tags ? `
+                                    <div class="record-tags">
+                                        ${tags.split(',').map(tag =>
+                `<span class="tag">${escapeHtml(tag.trim())}</span>`
+            ).join('')}
+                                    </div>
+                                ` : ''}
+                            </div>
+                            <a href="${docLink}" target="_blank" class="record-link">
+                                Consulter
+                            </a>
+                        </div>
+                    </div>
+                `;
+        }).join('');
+
+        updateStats(records);
+    }
+
+    function updateStats(displayedRecords) {
+        const totalCount = recordsData.length; // Always show total from all records
+        const currentMonth = new Date().getMonth();
+        const currentYear = new Date().getFullYear();
+
+        const recentCount = recordsData.filter(record => {
+            if (!record.timestamp) return false;
+            const recordDate = new Date(record.timestamp);
+            return recordDate.getMonth() === currentMonth && recordDate.getFullYear() === currentYear;
+        }).length;
+
+        document.getElementById('totalADRs').textContent = totalCount;
+        document.getElementById('recentADRs').textContent = recentCount;
+        document.getElementById('recordsCount').textContent = displayedRecords.length; // Show filtered count
+    }
+
+    function formatDate(dateString) {
+        let date;
+        if (typeof dateString === 'string') {
+            date = new Date(dateString);
+        } else {
+            date = dateString;
+        }
+
+        if (isNaN(date.getTime())) {
+            return 'Date invalide';
+        }
+
+        return date.toLocaleDateString('fr-FR', {
+            day: 'numeric',
+            month: 'short',
+            year: 'numeric'
+        });
+    }
+
+    function escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    // Show messages to user
+
+    function clearForm() {
+        document.getElementById('adrForm').reset();
+        selectedTags = [];
+        updateTagsDisplay();
+        renderTagsDropdown();
+        document.getElementById('selectedTags').value = '';
+    }
+
+    function populateFilterOptions() {
+        console.log('Populating filter options from records:', recordsData);
+
+        // Get unique values for filters from actual records
+        const projects = [...new Set(recordsData.map(record => record.projectName).filter(Boolean))];
+        const redactors = [...new Set(recordsData.map(record => record.redactor).filter(Boolean))];
+
+        console.log('Unique projects found:', projects);
+        console.log('Unique redactors found:', redactors);
+
+        // Populate project filter
+        const projectFilter = document.getElementById('projectFilter');
+        projectFilter.innerHTML = '<option value="">Tous les projets</option>';
+        projects.sort().forEach(project => {
+            const option = document.createElement('option');
+            option.value = project;
+            option.textContent = project;
+            projectFilter.appendChild(option);
+        });
+
+        // Populate redactor filter
+        const redactorFilter = document.getElementById('redactorFilter');
+        redactorFilter.innerHTML = '<option value="">Tous les rédacteurs</option>';
+        redactors.sort().forEach(redactor => {
+            const option = document.createElement('option');
+            option.value = redactor;
+            option.textContent = redactor;
+            redactorFilter.appendChild(option);
+        });
+
+        console.log('Filter options populated');
     }
 
     function updateActiveFiltersDisplay() {
@@ -1383,9 +1685,9 @@
             const filterElement = document.createElement('div');
             filterElement.className = 'active-filter';
             filterElement.innerHTML = `
-                ${filter.label}
-                <button class="remove-filter" onclick="removeFilter('${filter.type}')">✕</button>
-            `;
+                    ${filter.label}
+                    <button class="remove-filter" onclick="removeFilter('${filter.type}')">✕</button>
+                `;
             activeFiltersContainer.appendChild(filterElement);
         });
     }
@@ -1426,232 +1728,49 @@
             info.style.display = 'none';
         }
     }
+    function showMessage(text, type) {
+        console.log(`${type.toUpperCase()}: ${text}`);
 
-    function populateFilterOptions() {
-        // Get unique values for filters
-        const projects = [...new Set(recordsData.map(record => record.projectName).filter(Boolean))];
-        const redactors = [...new Set(recordsData.map(record => record.redactor).filter(Boolean))];
+        // Create a simple message display
+        let messageEl = document.getElementById('tempMessage');
+        if (!messageEl) {
+            messageEl = document.createElement('div');
+            messageEl.id = 'tempMessage';
+            messageEl.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    padding: 12px 20px;
+                    border-radius: 6px;
+                    font-family: 'Courier New', monospace;
+                    font-size: 14px;
+                    z-index: 9999;
+                    max-width: 400px;
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+                `;
+            document.body.appendChild(messageEl);
+        }
 
-        // Populate project filter
-        const projectFilter = document.getElementById('projectFilter');
-        projectFilter.innerHTML = '<option value="">Tous les projets</option>';
-        projects.sort().forEach(project => {
-            const option = document.createElement('option');
-            option.value = project;
-            option.textContent = project;
-            projectFilter.appendChild(option);
-        });
-
-        // Populate redactor filter
-        const redactorFilter = document.getElementById('redactorFilter');
-        redactorFilter.innerHTML = '<option value="">Tous les rédacteurs</option>';
-        redactors.sort().forEach(redactor => {
-            const option = document.createElement('option');
-            option.value = redactor;
-            option.textContent = redactor;
-            redactorFilter.appendChild(option);
-        });
-    }
-
-    // Handle form submission
-    document.getElementById('adrForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-
-        const formData = {
-            name: document.getElementById('name').value,
-            projectName: document.getElementById('projectName').value,
-            docLink: document.getElementById('docLink').value,
-            tags: document.getElementById('tags').value,
-            redactor: document.getElementById('redactor').value
+        // Set message styling based on type
+        const styles = {
+            success: { bg: '#238636', color: '#ffffff' },
+            error: { bg: '#da3633', color: '#ffffff' },
+            warning: { bg: '#f85149', color: '#ffffff' },
+            info: { bg: '#58a6ff', color: '#ffffff' }
         };
 
-        // Validate Google Docs URL
-        if (!isValidGoogleDocsUrl(formData.docLink)) {
-            showMessage('Veuillez entrer une URL Google Docs valide', 'error');
-            return;
-        }
-
-        // Show loading state
-        const submitBtn = document.querySelector('.btn-primary');
-        const originalText = submitBtn.innerHTML;
-        submitBtn.innerHTML = '<div class="loading-spinner"></div> Ajout en cours...';
-        submitBtn.disabled = true;
-
-        google.script.run
-            .withSuccessHandler(function(result) {
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
-
-                if (result.success) {
-                    showMessage(result.message, 'success');
-                    clearForm();
-                    loadRecords(); // Refresh the records list
-                    // Switch to search tab to see the new record
-                    switchTabProgrammatically('search');
-                } else {
-                    showMessage(result.message, 'error');
-                }
-            })
-            .withFailureHandler(function(error) {
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
-                showMessage('Erreur: ' + error.toString(), 'error');
-            })
-            .addADR(formData);
-    });
-
-    function switchTabProgrammatically(tabName) {
-        // Update tab buttons
-        document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
-        document.querySelectorAll('.tab-button').forEach(btn => {
-            if (btn.textContent.includes(tabName === 'search' ? 'Consulter' : 'Ajouter')) {
-                btn.classList.add('active');
-            }
-        });
-
-        // Update tab content
-        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-        document.getElementById(tabName + 'Tab').classList.add('active');
-    }
-
-    function loadRecords() {
-        console.log('loadRecords called');
-        google.script.run
-            .withSuccessHandler(function(records) {
-                console.log('SUCCESS - Received records from server:', records);
-
-                if (records === null || records === undefined) {
-                    console.error('Records is null or undefined');
-                    document.getElementById('recordsList').innerHTML =
-                        '<div class="loading-state">Erreur: Aucune donnée reçue du serveur</div>';
-                    return;
-                }
-                recordsData = records;
-                filteredRecords = [...records]; // Initialize filtered records
-                populateFilterOptions();
-                applyFilters(); // This will display records and update stats
-            })
-            .withFailureHandler(function(error) {
-                console.error('FAILURE - Failed to load records:', error);
-                document.getElementById('recordsList').innerHTML =
-                    '<div class="loading-state">Erreur de chargement: ' + error.toString() + '</div>';
-            })
-            .getADRs();
-    }
-
-    function displayRecords(records) {
-        const recordsList = document.getElementById('recordsList');
-
-        if (!records || !Array.isArray(records)) {
-            recordsList.innerHTML = '<div class="loading-state">Erreur: Données invalides reçues</div>';
-            return;
-        }
-
-        if (records.length === 0) {
-            const hasFilters = Object.values(activeFilters).some(filter => filter !== '');
-            const emptyMessage = hasFilters ?
-                'Aucun ADR ne correspond à vos critères de recherche' :
-                'Commencez par ajouter votre premier ADR avec l\'onglet "Ajouter un ADR"';
-
-            recordsList.innerHTML = `
-                <div class="empty-state">
-                    <div class="empty-title">Aucun ADR trouvé</div>
-                    <div class="empty-description">${emptyMessage}</div>
-                </div>
-            `;
-            return;
-        }
-
-        // Sort by timestamp (newest first)
-        records.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-
-        recordsList.innerHTML = records.map(record => `
-            <div class="record-item">
-                <div class="record-content">
-                    <div class="record-main-info">
-                        <div class="record-header">
-                            <div class="record-name">${escapeHtml(record.name)}</div>
-                            ${record.projectName ? `<div class="project-name">${escapeHtml(record.projectName)}</div>` : ''}
-                        </div>
-                        <div class="record-meta">
-                            <div class="meta-item">👤 ${escapeHtml(record.redactor)}</div>
-                            <div class="meta-item">📅 ${formatDate(record.timestamp)}</div>
-                        </div>
-                        ${record.tags ? `
-                            <div class="record-tags">
-                                ${record.tags.split(',').map(tag =>
-            `<span class="tag">${escapeHtml(tag.trim())}</span>`
-        ).join('')}
-                            </div>
-                        ` : ''}
-                    </div>
-                    <a href="${record.docLink}" target="_blank" class="record-link">
-                        Consulter
-                    </a>
-                </div>
-            </div>
-        `).join('');
-
-        updateStats(records);
-    }
-
-    function updateStats(records) {
-        const totalCount = recordsData.length; // Always show total from all records
-        const currentMonth = new Date().getMonth();
-        const currentYear = new Date().getFullYear();
-
-        const recentCount = recordsData.filter(record => {
-            const recordDate = new Date(record.timestamp);
-            return recordDate.getMonth() === currentMonth && recordDate.getFullYear() === currentYear;
-        }).length;
-
-        document.getElementById('totalADRs').textContent = totalCount;
-        document.getElementById('recentADRs').textContent = recentCount;
-        document.getElementById('recordsCount').textContent = records.length; // Show filtered count
-    }
-
-    function showMessage(text, type) {
-        const messageEl = document.getElementById('message');
+        const style = styles[type] || styles.info;
+        messageEl.style.backgroundColor = style.bg;
+        messageEl.style.color = style.color;
         messageEl.textContent = text;
-        messageEl.className = `alert alert-${type}`;
         messageEl.style.display = 'block';
 
+        // Auto-hide after 5 seconds
         setTimeout(() => {
-            messageEl.style.display = 'none';
+            if (messageEl) {
+                messageEl.style.display = 'none';
+            }
         }, 5000);
-    }
-
-    function clearForm() {
-        document.getElementById('adrForm').reset();
-    }
-
-    function isValidGoogleDocsUrl(url) {
-        return url.includes('docs.google.com/document/d/');
-    }
-
-    function formatDate(dateString) {
-        let date;
-        if (typeof dateString === 'string') {
-            date = new Date(dateString);
-        } else {
-            date = dateString;
-        }
-
-        if (isNaN(date.getTime())) {
-            return 'Date invalide';
-        }
-
-        return date.toLocaleDateString('fr-FR', {
-            day: 'numeric',
-            month: 'short',
-            year: 'numeric'
-        });
-    }
-
-    function escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
     }
 </script>
 </body>
