@@ -4,221 +4,644 @@
     <base target="_top">
     <title>Architecture Decision Records</title>
     <style>
-        body {
-            font-family: 'Google Sans', Roboto, Arial, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f8f9fa;
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --color-bg-primary: #f8f1ee;
+            --color-bg-secondary: #ffffff;
+            --color-bg-tertiary: #fafbfc;
+            --color-primary: #195162;
+            --color-secondary: #618794;
+            --color-accent: #e6eaf1;
+            --color-success: #b9e9da;
+            --color-warning: #ffdb96;
+            --color-error: #ffc9c9;
+            --color-text-primary: #195162;
+            --color-text-secondary: #618794;
+            --color-text-muted: #8b9499;
+            --border-radius: 12px;
+            --border-radius-lg: 16px;
+            --shadow-sm: 0 2px 8px rgba(25, 81, 98, 0.08);
+            --shadow-md: 0 8px 24px rgba(25, 81, 98, 0.12);
+            --shadow-lg: 0 16px 40px rgba(25, 81, 98, 0.16);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .container {
-            background: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-            color: #1a73e8;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 500;
-            color: #5f6368;
-        }
-
-        input[type="text"], input[type="url"], textarea {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #dadce0;
-            border-radius: 4px;
-            font-size: 14px;
+        * {
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
-            transition: border-color 0.2s;
         }
 
-        input[type="text"]:focus, input[type="url"]:focus, textarea:focus {
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, var(--color-bg-primary) 0%, #faf6f3 100%);
+            color: var(--color-text-primary);
+            line-height: 1.6;
+            font-weight: 400;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2.5rem;
+            min-height: 100vh;
+        }
+
+        .left-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .right-panel {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header-card {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+            padding: 3rem 2.5rem;
+            border-radius: var(--border-radius-lg);
+            color: white;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .header-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            transform: translate(50%, -50%);
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .app-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.025em;
+        }
+
+        .app-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .stat-item {
+            background: rgba(255,255,255,0.1);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .form-card {
+            background: var(--color-bg-secondary);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--color-accent);
+            overflow: hidden;
+            flex: 1;
+        }
+
+        .form-header {
+            padding: 2rem 2.5rem 1.5rem;
+            border-bottom: 1px solid var(--color-accent);
+            background: var(--color-bg-tertiary);
+        }
+
+        .form-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .form-title-icon {
+            width: 24px;
+            height: 24px;
+            background: linear-gradient(135deg, var(--color-secondary), var(--color-primary));
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+        }
+
+        .form-body {
+            padding: 2.5rem;
+        }
+
+        .input-group {
+            margin-bottom: 1.75rem;
+        }
+
+        .input-label {
+            font-weight: 500;
+            color: var(--color-text-primary);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .required-indicator {
+            color: #e53e3e;
+            font-size: 0.75rem;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 2px solid var(--color-accent);
+            border-radius: var(--border-radius);
+            font-size: 0.925rem;
+            font-family: inherit;
+            transition: var(--transition);
+            background: var(--color-bg-tertiary);
+            color: var(--color-text-primary);
+        }
+
+        .input-field:focus {
             outline: none;
-            border-color: #1a73e8;
-            box-shadow: 0 0 0 2px rgba(26,115,232,0.2);
+            border-color: var(--color-secondary);
+            background: var(--color-bg-secondary);
+            box-shadow: 0 0 0 4px rgba(97, 135, 148, 0.1);
         }
 
-        textarea {
-            height: 80px;
+        .input-field::placeholder {
+            color: var(--color-text-muted);
+        }
+
+        .textarea-field {
+            min-height: 80px;
             resize: vertical;
+            font-family: inherit;
         }
 
         .button-group {
             display: flex;
-            gap: 10px;
-            margin-top: 30px;
+            gap: 1rem;
+            margin-top: 2rem;
         }
 
-        button {
-            padding: 12px 24px;
+        .btn {
+            padding: 0.875rem 1.5rem;
             border: none;
-            border-radius: 4px;
-            font-size: 14px;
+            border-radius: var(--border-radius);
+            font-size: 0.925rem;
             font-weight: 500;
+            font-family: inherit;
             cursor: pointer;
-            transition: background-color 0.2s;
-        }
-
-        .btn-primary {
-            background-color: #1a73e8;
-            color: white;
-            flex: 1;
-        }
-
-        .btn-primary:hover {
-            background-color: #1557b0;
-        }
-
-        .btn-secondary {
-            background-color: #f8f9fa;
-            color: #5f6368;
-            border: 1px solid #dadce0;
-        }
-
-        .btn-secondary:hover {
-            background-color: #e8eaed;
-        }
-
-        .message {
-            padding: 12px;
-            border-radius: 4px;
-            margin-bottom: 20px;
-            display: none;
-        }
-
-        .message.success {
-            background-color: #e8f5e8;
-            color: #137333;
-            border: 1px solid #81c995;
-        }
-
-        .message.error {
-            background-color: #fce8e6;
-            color: #d93025;
-            border: 1px solid #f28b82;
-        }
-
-        .records-section {
-            margin-top: 40px;
-            padding-top: 30px;
-            border-top: 1px solid #dadce0;
-        }
-
-        .records-list {
-            max-height: 400px;
-            overflow-y: auto;
-        }
-
-        .record-item {
-            background: #f8f9fa;
-            padding: 15px;
-            margin-bottom: 10px;
-            border-radius: 4px;
-            border-left: 4px solid #1a73e8;
-        }
-
-        .record-name {
-            font-weight: 500;
-            color: #1a73e8;
-            margin-bottom: 5px;
-        }
-
-        .record-meta {
-            font-size: 12px;
-            color: #5f6368;
-            margin-bottom: 8px;
-        }
-
-        .record-tags {
-            font-size: 12px;
-            color: #1a73e8;
-            background: #e8f0fe;
-            padding: 2px 8px;
-            border-radius: 12px;
-            display: inline-block;
-            margin-right: 5px;
-        }
-
-        .record-link {
-            font-size: 12px;
-            color: #1a73e8;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
             text-decoration: none;
         }
 
-        .record-link:hover {
-            text-decoration: underline;
+        .btn-primary {
+            background: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-primary) 100%);
+            color: white;
+            box-shadow: var(--shadow-sm);
+            flex: 1;
         }
 
-        .loading {
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: var(--color-bg-secondary);
+            color: var(--color-text-secondary);
+            border: 2px solid var(--color-accent);
+        }
+
+        .btn-secondary:hover {
+            background: var(--color-accent);
+            border-color: var(--color-secondary);
+        }
+
+        .alert {
+            padding: 1rem 1.25rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 1.5rem;
+            display: none;
+            font-weight: 500;
+            font-size: 0.925rem;
+        }
+
+        .alert-success {
+            background: var(--color-success);
+            color: var(--color-text-primary);
+            border-left: 4px solid var(--color-secondary);
+        }
+
+        .alert-error {
+            background: var(--color-error);
+            color: var(--color-text-primary);
+            border-left: 4px solid #e53e3e;
+        }
+
+        .records-container {
+            background: var(--color-bg-secondary);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--color-accent);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .records-header {
+            padding: 2rem 2.5rem 1.5rem;
+            border-bottom: 1px solid var(--color-accent);
+            background: var(--color-bg-tertiary);
+        }
+
+        .records-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .records-count {
+            font-size: 0.75rem;
+            background: var(--color-secondary);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+        .records-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+        }
+
+        .record-item {
+            background: var(--color-bg-tertiary);
+            border: 1px solid var(--color-accent);
+            border-radius: var(--border-radius);
+            margin-bottom: 1rem;
+            transition: var(--transition);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .record-item:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+            border-color: var(--color-secondary);
+        }
+
+        .record-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(135deg, var(--color-success), var(--color-secondary));
+        }
+
+        .record-content {
+            padding: 1.5rem;
+            padding-left: 2rem;
+        }
+
+        .record-name {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+        }
+
+        .record-meta {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            font-size: 0.8rem;
+            color: var(--color-text-muted);
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+        }
+
+        .meta-icon {
+            width: 16px;
+            height: 16px;
+            opacity: 0.7;
+        }
+
+        .record-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .tag {
+            background: linear-gradient(135deg, var(--color-warning), var(--color-success));
+            color: var(--color-text-primary);
+            padding: 0.25rem 0.75rem;
+            border-radius: 16px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .record-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--color-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.875rem;
+            padding: 0.5rem 1rem;
+            background: rgba(97, 135, 148, 0.1);
+            border-radius: var(--border-radius);
+            transition: var(--transition);
+        }
+
+        .record-link:hover {
+            background: var(--color-secondary);
+            color: white;
+            transform: translateX(2px);
+        }
+
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem 2rem;
             text-align: center;
-            color: #5f6368;
-            padding: 20px;
+            height: 100%;
+        }
+
+        .empty-icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, var(--color-accent), var(--color-secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            opacity: 0.7;
+        }
+
+        .empty-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-description {
+            color: var(--color-text-muted);
+            font-size: 0.925rem;
+        }
+
+        .loading-state {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+            gap: 1rem;
+            color: var(--color-text-secondary);
+        }
+
+        .loading-spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--color-accent);
+            border-top: 2px solid var(--color-secondary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Custom scrollbar */
+        .records-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .records-list::-webkit-scrollbar-track {
+            background: var(--color-accent);
+        }
+
+        .records-list::-webkit-scrollbar-thumb {
+            background: var(--color-secondary);
+            border-radius: 3px;
+        }
+
+        .records-list::-webkit-scrollbar-thumb:hover {
+            background: var(--color-primary);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .app-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                padding: 1.5rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .app-container {
+                padding: 1rem;
+            }
+
+            .header-card {
+                padding: 2rem 1.5rem;
+            }
+
+            .form-body, .records-header {
+                padding: 1.5rem;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .record-meta {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
         }
     </style>
 </head>
 <body>
-<div class="container">
-    <div class="header">
-        <h1>Architecture Decision Records</h1>
-        <p>Manage and track your architectural decisions</p>
+<div class="app-container">
+    <div class="left-panel">
+        <div class="header-card">
+            <div class="header-content">
+                <h1 class="app-title">Architecture Decision Records</h1>
+                <p class="app-subtitle">Système de gestion des décisions architecturales</p>
+
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-number" id="totalADRs">--</div>
+                        <div class="stat-label">Total ADRs</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="recentADRs">--</div>
+                        <div class="stat-label">Ce mois</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-card">
+            <div class="form-header">
+                <h2 class="form-title">
+                    <div class="form-title-icon">📝</div>
+                    Nouvel ADR
+                </h2>
+            </div>
+
+            <div class="form-body">
+                <div id="message" class="alert"></div>
+
+                <form id="adrForm">
+                    <div class="input-group">
+                        <label class="input-label" for="name">
+                            Nom de l'ADR
+                            <span class="required-indicator">*</span>
+                        </label>
+                        <input type="text" id="name" name="name" class="input-field" required
+                               placeholder="ex: ADR-001: Sélection de base de données">
+                    </div>
+
+                    <div class="input-group">
+                        <label class="input-label" for="docLink">
+                            Lien Google Doc
+                            <span class="required-indicator">*</span>
+                        </label>
+                        <input type="url" id="docLink" name="docLink" class="input-field" required
+                               placeholder="https://docs.google.com/document/d/...">
+                    </div>
+
+                    <div class="input-group">
+                        <label class="input-label" for="tags">
+                            Tags
+                        </label>
+                        <textarea id="tags" name="tags" class="input-field textarea-field"
+                                  placeholder="ex: database, backend, performance (séparez par des virgules)"></textarea>
+                    </div>
+
+                    <div class="input-group">
+                        <label class="input-label" for="redactor">
+                            Rédacteur
+                            <span class="required-indicator">*</span>
+                        </label>
+                        <input type="text" id="redactor" name="redactor" class="input-field" required
+                               placeholder="ex: Jean Dupont">
+                    </div>
+
+                    <div class="button-group">
+                        <button type="submit" class="btn btn-primary">
+                            ✨ Ajouter l'ADR
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="clearForm()">
+                            🔄 Réinitialiser
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 
-    <div id="message" class="message"></div>
-
-    <form id="adrForm">
-        <div class="form-group">
-            <label for="name">ADR Name *</label>
-            <input type="text" id="name" name="name" required
-                   placeholder="e.g., ADR-001: Database Selection">
-        </div>
-
-        <div class="form-group">
-            <label for="docLink">Google Doc Link *</label>
-            <input type="url" id="docLink" name="docLink" required
-                   placeholder="https://docs.google.com/document/d/...">
-        </div>
-
-        <div class="form-group">
-            <label for="tags">Tags</label>
-            <textarea id="tags" name="tags"
-                      placeholder="e.g., database, backend, performance (separate with commas)"></textarea>
-        </div>
-
-        <div class="form-group">
-            <label for="redactor">Redactor *</label>
-            <input type="text" id="redactor" name="redactor" required
-                   placeholder="e.g., John Doe">
-        </div>
-
-        <div class="button-group">
-            <button type="submit" class="btn-primary">Add ADR</button>
-            <button type="button" class="btn-secondary" onclick="clearForm()">Clear</button>
-        </div>
-    </form>
-
-    <div class="records-section">
-        <h2>Recent ADRs</h2>
-        <div id="recordsList" class="records-list">
-            <div class="loading">Loading records...</div>
+    <div class="right-panel">
+        <div class="records-container">
+            <div class="records-header">
+                <div class="records-title">
+                    📚 ADRs récents
+                    <span class="records-count" id="recordsCount">0</span>
+                </div>
+            </div>
+            <div id="recordsList" class="records-list">
+                <div class="loading-state">
+                    <div class="loading-spinner"></div>
+                    Chargement des enregistrements...
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
+    let recordsData = [];
+
     // Load existing records when page loads
     document.addEventListener('DOMContentLoaded', function() {
         console.log('Page loaded, attempting to load records...');
@@ -238,19 +661,19 @@
 
         // Validate Google Docs URL
         if (!isValidGoogleDocsUrl(formData.docLink)) {
-            showMessage('Please enter a valid Google Docs URL', 'error');
+            showMessage('Veuillez entrer une URL Google Docs valide', 'error');
             return;
         }
 
         // Show loading state
         const submitBtn = document.querySelector('.btn-primary');
-        const originalText = submitBtn.textContent;
-        submitBtn.textContent = 'Adding...';
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<div class="loading-spinner"></div> Ajout en cours...';
         submitBtn.disabled = true;
 
         google.script.run
             .withSuccessHandler(function(result) {
-                submitBtn.textContent = originalText;
+                submitBtn.innerHTML = originalText;
                 submitBtn.disabled = false;
 
                 if (result.success) {
@@ -262,9 +685,9 @@
                 }
             })
             .withFailureHandler(function(error) {
-                submitBtn.textContent = originalText;
+                submitBtn.innerHTML = originalText;
                 submitBtn.disabled = false;
-                showMessage('Error: ' + error.toString(), 'error');
+                showMessage('Erreur: ' + error.toString(), 'error');
             })
             .addADR(formData);
     });
@@ -273,26 +696,22 @@
         console.log('loadRecords called');
         google.script.run
             .withSuccessHandler(function(records) {
-                console.log('SUCCESS - Received records from server:');
-                console.log('Type:', typeof records);
-                console.log('Value:', records);
-                console.log('Is Array:', Array.isArray(records));
+                console.log('SUCCESS - Received records from server:', records);
 
-                // Add null check
                 if (records === null || records === undefined) {
                     console.error('Records is null or undefined');
                     document.getElementById('recordsList').innerHTML =
-                        '<div class="loading">Error: No data received from server</div>';
+                        '<div class="loading-state">Erreur: Aucune donnée reçue du serveur</div>';
                     return;
                 }
+                recordsData = records;
                 displayRecords(records);
+                updateStats(records);
             })
             .withFailureHandler(function(error) {
-                console.error('FAILURE - Failed to load records:');
-                console.error('Error type:', typeof error);
-                console.error('Error value:', error);
+                console.error('FAILURE - Failed to load records:', error);
                 document.getElementById('recordsList').innerHTML =
-                    '<div class="loading">Error loading records: ' + error.toString() + '</div>';
+                    '<div class="loading-state">Erreur de chargement: ' + error.toString() + '</div>';
             })
             .getADRs();
     }
@@ -300,21 +719,19 @@
     function displayRecords(records) {
         const recordsList = document.getElementById('recordsList');
 
-        // Add multiple safety checks
-        if (!records) {
-            console.error('Records is falsy:', records);
-            recordsList.innerHTML = '<div class="loading">Error: Invalid data received</div>';
-            return;
-        }
-
-        if (!Array.isArray(records)) {
-            console.error('Records is not an array:', typeof records, records);
-            recordsList.innerHTML = '<div class="loading">Error: Expected array but got ' + typeof records + '</div>';
+        if (!records || !Array.isArray(records)) {
+            recordsList.innerHTML = '<div class="loading-state">Erreur: Données invalides reçues</div>';
             return;
         }
 
         if (records.length === 0) {
-            recordsList.innerHTML = '<div class="loading">No ADRs found. Add your first one above!</div>';
+            recordsList.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📋</div>
+                        <div class="empty-title">Aucun ADR trouvé</div>
+                        <div class="empty-description">Commencez par ajouter votre premier ADR avec le formulaire</div>
+                    </div>
+                `;
             return;
         }
 
@@ -323,27 +740,54 @@
 
         recordsList.innerHTML = records.map(record => `
                 <div class="record-item">
-                    <div class="record-name">${escapeHtml(record.name)}</div>
-                    <div class="record-meta">
-                        By ${escapeHtml(record.redactor)} • ${formatDate(record.timestamp)}
-                    </div>
-                    ${record.tags ? `<div class="record-tags">${escapeHtml(record.tags)}</div>` : ''}
-                    <div style="margin-top: 8px;">
+                    <div class="record-content">
+                        <div class="record-name">${escapeHtml(record.name)}</div>
+                        <div class="record-meta">
+                            <div class="meta-item">
+                                <span class="meta-icon">👤</span>
+                                ${escapeHtml(record.redactor)}
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-icon">📅</span>
+                                ${formatDate(record.timestamp)}
+                            </div>
+                        </div>
+                        ${record.tags ? `
+                            <div class="record-tags">
+                                ${record.tags.split(',').map(tag =>
+            `<span class="tag">${escapeHtml(tag.trim())}</span>`
+        ).join('')}
+                            </div>
+                        ` : ''}
                         <a href="${record.docLink}" target="_blank" class="record-link">
-                            📄 View Document
+                            📄 Consulter le document
                         </a>
                     </div>
                 </div>
             `).join('');
     }
 
+    function updateStats(records) {
+        const totalCount = records.length;
+        const currentMonth = new Date().getMonth();
+        const currentYear = new Date().getFullYear();
+
+        const recentCount = records.filter(record => {
+            const recordDate = new Date(record.timestamp);
+            return recordDate.getMonth() === currentMonth && recordDate.getFullYear() === currentYear;
+        }).length;
+
+        document.getElementById('totalADRs').textContent = totalCount;
+        document.getElementById('recentADRs').textContent = recentCount;
+        document.getElementById('recordsCount').textContent = totalCount;
+    }
+
     function showMessage(text, type) {
         const messageEl = document.getElementById('message');
         messageEl.textContent = text;
-        messageEl.className = 'message ' + type;
+        messageEl.className = `alert alert-${type}`;
         messageEl.style.display = 'block';
 
-        // Hide message after 5 seconds
         setTimeout(() => {
             messageEl.style.display = 'none';
         }, 5000);
@@ -358,7 +802,6 @@
     }
 
     function formatDate(dateString) {
-        // Handle both Date objects and string dates
         let date;
         if (typeof dateString === 'string') {
             date = new Date(dateString);
@@ -366,12 +809,15 @@
             date = dateString;
         }
 
-        // Check if date is valid
         if (isNaN(date.getTime())) {
-            return 'Invalid date';
+            return 'Date invalide';
         }
 
-        return date.toLocaleDateString() + ' at ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        return date.toLocaleDateString('fr-FR', {
+            day: 'numeric',
+            month: 'short',
+            year: 'numeric'
+        });
     }
 
     function escapeHtml(text) {
